@@ -95,38 +95,36 @@ mod ERC721 {
         Approval(get_caller_address(), to, token_id);
     }
 
-    // #[external]
-    // fn set_approval_for_all(operator: ContractAddress, approved: bool) {
-    //     ERC721::set_approval_for_all(operator, approved)
-    // }
+    #[external]
+    fn set_approval_for_all(operator: ContractAddress, approved: bool) {
 
-    // #[external]
-    // fn transfer_from(from: ContractAddress, to: ContractAddress, token_id: u256) {
-    //     ERC721::transfer_from(from, to, token_id)
-    // }
+        let calldata = ArrayTrait::<felt252>::new();
 
-    // #[external]
-    // fn safe_transfer_from(
-    //     from: ContractAddress, to: ContractAddress, token_id: u256, data: Array<felt252>
-    // ) {
-    //     ERC721::safe_transfer_from(from, to, token_id, data)
-    // }
-// #[external]
-// fn transfer(spender: ContractAddress, recipient: ContractAddress, amount: u256) {
-//     ERC20_Transfer.execute(symbol,spender, recipient, amount);
+        calldata.append(starknet::get_contract_address().into());
+        calldata.append(operator.into());
+        calldata.append(approved.try_into());
 
-//     let calldata = ArrayTrait::<felt252>::new();
-//     calldata.append(starknet::get_contract_address().into());
-//     calldata.append(spender.into());
-//     calldata.append(recipient.into());
-//     calldata.append(amount.try_into());
+        IWorldDispatcher {
+            contract_address: world_address::read()
+        }.execute('ERC721_Approve_For_All', calldata.span());
 
-//     IWorldDispatcher { contract_address: world_address::read() }.execute('ERC20_TransferFrom', calldata.span());
+        ApprovalForAll(get_caller_address(), operator, approved);
+    }
 
-//     let approval_sk: StorageKey = (token_id, (caller.into(), spender)).into();
-//     let approval = commands::<Approval>::get(approval_sk);
+    #[external]
+    fn transfer_from(from: ContractAddress, to: ContractAddress, token_id: u256) {
 
-//     Transfer(spender, recipient, amount);
-//     Approval(get_caller_address(),spender,approval.amount);
-// }
+        let calldata = ArrayTrait::<felt252>::new();
+
+        calldata.append(starknet::get_contract_address().into());
+        calldata.append(from.into());
+        calldata.append(to.into());
+        calldata.append(token_id.try_into());
+
+        IWorldDispatcher {
+            contract_address: world_address::read()
+        }.execute('ERC721_Tranfer_From', calldata.span());
+
+        Transfer(from, to, token_id);
+    }
 }

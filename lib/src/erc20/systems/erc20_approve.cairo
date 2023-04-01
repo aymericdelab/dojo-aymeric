@@ -5,7 +5,7 @@ mod ERC20_Approve {
     use starknet::ContractAddress;
     use dojo::storage::key::StorageKey;
 
-    execute(token_id: felt252, spender: ContractAddress, amount: felt252) {
+    fn execute(token_id: felt252, spender: ContractAddress, amount: felt252) {
         let caller = starknet::get_caller_address();
         let approval_sk: StorageKey = (token_id, (caller.into(), spender)).into();
         let approval = commands::<Approval>::get(approval_sk);
