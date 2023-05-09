@@ -58,11 +58,6 @@ impl U250PartialEq of PartialEq<u250> {
     }
 }
 
-impl Felt252IntoU250 of Into<felt252, u250> {
-    fn into(self: felt252) -> u250 {
-        u250 { inner: self }
-    }
-}
 
 impl U250IntoU250 of Into<u250, u250> {
     fn into(self: u250) -> u250 {
