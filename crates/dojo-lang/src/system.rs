@@ -5,8 +5,8 @@ use cairo_lang_defs::plugin::{
 };
 use cairo_lang_semantic::patcher::{PatchBuilder, RewriteNode};
 use cairo_lang_semantic::plugin::DynPluginAuxData;
-use cairo_lang_syntax::node::ast::MaybeModuleBody;
 use cairo_lang_syntax::node::ast::OptionReturnTypeClause::ReturnTypeClause;
+use cairo_lang_syntax::node::ast::{MaybeModuleBody, OptionTerminalSemicolon};
 use cairo_lang_syntax::node::db::SyntaxGroup;
 use cairo_lang_syntax::node::{ast, Terminal, TypedSyntaxNode};
 
@@ -154,8 +154,22 @@ impl System {
                 }
             }
             ast::Statement::Expr(expr) => {
-                if let Some(rewrite_nodes) = self.handle_expr(db, expr.expr(db)) {
-                    return rewrite_nodes;
+                if let Some(expr_nodes) = self.handle_expr(db, expr.expr(db)) {
+                    match expr.semicolon(db) {
+                        OptionTerminalSemicolon::TerminalSemicolon(value) => {
+                            let expr_rewrite = RewriteNode::interpolate_patched(
+                                "$expr$;",
+                                HashMap::from([(
+                                    "expr".to_string(),
+                                    RewriteNode::new_modified(expr_nodes),
+                                )]),
+                            );
+                            return vec![expr_rewrite];
+                        }
+                        OptionTerminalSemicolon::Empty(_) => {
+                            return expr_nodes;
+                        }
+                    }
                 }
             }
             _ => {}
@@ -223,7 +237,7 @@ impl System {
     fn handle_loop(&mut self, db: &dyn SyntaxGroup, expr_loop: ast::ExprLoop) -> Vec<RewriteNode> {
         let loop_nodes: Vec<RewriteNode> = self.handle_block(db, expr_loop.body(db));
         let loop_rewrite = RewriteNode::interpolate_patched(
-            "loop $block$;",
+            "loop $block$",
             HashMap::from([("block".to_string(), RewriteNode::new_modified(loop_nodes))]),
         );
         vec![loop_rewrite]

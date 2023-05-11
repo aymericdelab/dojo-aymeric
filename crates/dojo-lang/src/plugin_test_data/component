@@ -95,3 +95,62 @@ mod PositionComponent {
 }
 
 //! > expected_diagnostics
+error: Skipped tokens. Expected: statement.
+ --> GrantResource:30:21
+                    ;
+                    ^
+
+error: Skipped tokens. Expected: statement.
+ --> RevokeResource:30:21
+                    ;
+                    ^
+
+error: Skipped tokens. Expected: statement.
+ --> contract:31:21
+                    ;
+                    ^
+
+error: Skipped tokens. Expected: statement.
+ --> contract:31:21
+                    ;
+                    ^
+
+error: Skipped tokens. Expected: statement.
+ --> contract:31:21
+                    ;
+                    ^
+
+error: Skipped tokens. Expected: statement.
+ --> contract:31:21
+                    ;
+                    ^
+
+error: Skipped tokens. Expected: statement.
+ --> contract:31:21
+                    ;
+                    ^
+
+error: Skipped tokens. Expected: statement.
+ --> contract:31:21
+                    ;
+                    ^
+
+error: Skipped tokens. Expected: statement.
+ --> contract:31:21
+                    ;
+                    ^
+
+error: Skipped tokens. Expected: statement.
+ --> contract:31:21
+                    ;
+                    ^
+
+error: Skipped tokens. Expected: statement.
+ --> contract:31:21
+                    ;
+                    ^
+
+error: Skipped tokens. Expected: statement.
+ --> contract:31:21
+                    ;
+                    ^

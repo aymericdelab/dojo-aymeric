@@ -310,8 +310,7 @@ mod SpawnSystem {
                 0_u8,
                 array::ArrayTrait::span(@calldata)
             );
-        }
-
+        };
         {
             let mut calldata = array::ArrayTrait::new();
             serde::Serde::serialize(@Player { name: name }, ref calldata);
@@ -336,8 +335,7 @@ mod SpawnSystem {
                 0_u8,
                 array::ArrayTrait::span(@calldata)
             );
-        }
-
+        };
         {
             let mut calldata = array::ArrayTrait::new();
             serde::Serde::serialize(@Player { name: name }, ref calldata);
@@ -362,8 +360,7 @@ mod SpawnSystem {
                 0_u8,
                 array::ArrayTrait::span(@calldata)
             );
-        }
-
+        };
         let player_id = starknet::get_caller_address();
 
         {
@@ -390,9 +387,8 @@ mod SpawnSystem {
                 0_u8,
                 array::ArrayTrait::span(@calldata)
             );
-        }
-
-        {
+        };
+        ; {
             let mut calldata = array::ArrayTrait::new();
             serde::Serde::serialize(@Player { name: name }, ref calldata);
             IWorldDispatcher {
@@ -416,8 +412,7 @@ mod SpawnSystem {
                 0_u8,
                 array::ArrayTrait::span(@calldata)
             );
-        }
-
+        };
         {
             let mut calldata = array::ArrayTrait::new();
             serde::Serde::serialize(@Player { name: name }, ref calldata);
@@ -442,7 +437,7 @@ mod SpawnSystem {
                 0_u8,
                 array::ArrayTrait::span(@calldata)
             );
-        }
+        };
         return ();
     }
 }
@@ -792,8 +787,7 @@ mod MoveSystem {
         IWorldDispatcher {
             contract_address: world_address
         }.execute(dojo_core::string::ShortStringTrait::new('SpawnSystem'), calldata.span());
-
-        move_inner(@positions_query, 0_u32, positions_query.len());
+        ; move_inner(@positions_query, 0_u32, positions_query.len());
 
         let mut i = 0;
         loop {
@@ -865,6 +859,26 @@ mod ProxySystem {
 }
 
 //! > expected_diagnostics
+error: Skipped tokens. Expected: statement.
+ --> Spawn:81:22
+                    ;;
+                     ^
+
+error: Skipped tokens. Expected: statement.
+ --> Move:230:17
+                ;
+                ^
+
+error: Skipped tokens. Expected: statement.
+ --> contract:82:22
+                    ;;
+                     ^
+
+error: Skipped tokens. Expected: statement.
+ --> contract:231:17
+                ;
+                ^
+
 error: Plugin diagnostic: Invalid arguments. Expected "(query, (components,))"
  --> lib.cairo:45:29
         commands::set_entity((
@@ -875,6 +889,11 @@ error: Plugin diagnostic: Component types cannot be empty
         let err = commands::<>::entity(player_id.into());
                   ^************************************^
 
+error: Skipped tokens. Expected: statement.
+ --> contract:82:22
+                    ;;
+                     ^
+
 error: Plugin diagnostic: Unexpected argument type. Expected: "dojo_core::storage::query::Query", found: "(?89, ?90, ?91, ?92, ?93)".
  --> Spawn:85:141
                         IWorldDispatcher { contract_address: world_address }.set_entity(dojo_core::string::ShortStringTrait::new('Player'), (0, 0, 0, 0, 0), 0_u8, array::ArrayTrait::span(@calldata));
@@ -884,3 +903,98 @@ error: Plugin diagnostic: Unexpected argument type. Expected: "dojo_core::storag
  --> Spawn:91:143
                         IWorldDispatcher { contract_address: world_address }.set_entity(dojo_core::string::ShortStringTrait::new('Position'), (0, 0, 0, 0, 0), 0_u8, array::ArrayTrait::span(@calldata));
                                                                                                                                               ^*************^
+
+error: Skipped tokens. Expected: statement.
+ --> contract:82:22
+                    ;;
+                     ^
+
+error: Skipped tokens. Expected: statement.
+ --> contract:82:22
+                    ;;
+                     ^
+
+error: Skipped tokens. Expected: statement.
+ --> contract:82:22
+                    ;;
+                     ^
+
+error: Skipped tokens. Expected: statement.
+ --> contract:231:17
+                ;
+                ^
+
+error: Skipped tokens. Expected: statement.
+ --> contract:231:17
+                ;
+                ^
+
+error: Skipped tokens. Expected: statement.
+ --> contract:231:17
+                ;
+                ^
+
+error: Skipped tokens. Expected: statement.
+ --> contract:231:17
+                ;
+                ^
+
+error: Skipped tokens. Expected: statement.
+ --> GrantResource:30:21
+                    ;
+                    ^
+
+error: Skipped tokens. Expected: statement.
+ --> RevokeResource:30:21
+                    ;
+                    ^
+
+error: Skipped tokens. Expected: statement.
+ --> contract:31:21
+                    ;
+                    ^
+
+error: Skipped tokens. Expected: statement.
+ --> contract:31:21
+                    ;
+                    ^
+
+error: Skipped tokens. Expected: statement.
+ --> contract:31:21
+                    ;
+                    ^
+
+error: Skipped tokens. Expected: statement.
+ --> contract:31:21
+                    ;
+                    ^
+
+error: Skipped tokens. Expected: statement.
+ --> contract:31:21
+                    ;
+                    ^
+
+error: Skipped tokens. Expected: statement.
+ --> contract:31:21
+                    ;
+                    ^
+
+error: Skipped tokens. Expected: statement.
+ --> contract:31:21
+                    ;
+                    ^
+
+error: Skipped tokens. Expected: statement.
+ --> contract:31:21
+                    ;
+                    ^
+
+error: Skipped tokens. Expected: statement.
+ --> contract:31:21
+                    ;
+                    ^
+
+error: Skipped tokens. Expected: statement.
+ --> contract:31:21
+                    ;
+                    ^
