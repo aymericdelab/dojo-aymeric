@@ -48,3 +48,4 @@ export function useComponentValue<S extends Schema>(
 
     return value ?? defaultValue;
 }
+

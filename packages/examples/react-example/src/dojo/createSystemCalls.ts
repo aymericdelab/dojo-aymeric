@@ -2,32 +2,33 @@ import { getComponentValue } from "@latticexyz/recs";
 import { awaitStreamValue } from "@latticexyz/utils";
 import { ClientComponents } from "./createClientComponents";
 import { SetupNetworkResult } from "./setupNetwork";
+import {number} from 'starknet';
 
 export type SystemCalls = ReturnType<typeof createSystemCalls>;
 
 export function createSystemCalls(
     { execute }: SetupNetworkResult,
-    { Moves, Position }: ClientComponents
+    // { Moves, Position }: ClientComponents
 ) {
-    const spawn = async () => {
-
-        const tx = await execute("Spawn", []);
+    const build_labor = async ({realm_id, resource_type, labor_units, multiplier}: {realm_id: number.BigNumberish, resource_type: number.BigNumberish, labor_units: number.BigNumberish, multiplier: number.BigNumberish}) => {
+        const tx = await execute("BuildLabor", [realm_id, resource_type, labor_units, multiplier]);
         // await awaitStreamValue(txReduced$, (txHash) => txHash === tx.transaction_hash);
-        return getComponentValue(Moves, 1 as any);
-    };
+    }
 
-    const move = async () => {
-
-        // execute from core
-
-        const tx = await execute("Move", [0, 0]);
+    const harvest_labor = async ({realm_id, resource_type}: {realm_id: number.BigNumberish, resource_type: number.BigNumberish}) => {
+        const tx = await execute("HarvestLabor", [realm_id, resource_type]);
         // await awaitStreamValue(txReduced$, (txHash) => txHash === tx.transaction_hash);
-        return getComponentValue(Position, 1 as any);
-    };
+    }
 
+    const mint_resources = async ({realm_id, resource_type, amount}: {realm_id: number.BigNumberish, resource_type: number.BigNumberish, amount: number.BigNumberish}) => {
+        const tx = await execute("MintResources", [realm_id, resource_type, amount]);
+        // get the events from the tx
+        // await awaitStreamValue(txReduced$, (txHash) => txHash === tx.transaction_hash);
+    }
 
     return {
-        spawn,
-        move
+        build_labor,
+        harvest_labor,
+        mint_resources,
     };
 }
