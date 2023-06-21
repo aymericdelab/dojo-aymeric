@@ -9,8 +9,8 @@ members = [
   "crates/dojo-test-utils",
   "crates/dojo-world",
   "crates/katana",
-  "crates/katana-core",
-  "crates/katana-rpc",
+  "crates/katana/core",
+  "crates/katana/rpc",
   "crates/sozo",
   "crates/torii",
 ]
@@ -84,6 +84,3 @@ blockifier = { git = "https://github.com/dojoengine/blockifier", branch = "dev" 
 
 [patch."https://github.com/starkware-libs/starknet-api"]
 starknet_api = { git = "https://github.com/dojoengine/starknet-api", branch = "dev" }
-
-[patch."https://github.com/xJonathanLEI/starknet-rs"]
-starknet-crypto = "0.5.1"
