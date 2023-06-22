@@ -14,6 +14,9 @@ impl ScalarType {
     pub const BOOL: &'static str = "bool";
     pub const CURSOR: &'static str = "Cursor";
     pub const ADDRESS: &'static str = "Address";
+    pub const CONTRACT_ADDRESS: &'static str = "ContractAddress";
+    pub const STARKNET_CONTRACT_ADDRESS: &'static str = "starknet::ContractAddress";
+    pub const TRADE_STATUS: &'static str = "TradeStatus";
     pub const DATE_TIME: &'static str = "DateTime";
     pub const FELT252: &'static str = "felt252";
 
@@ -29,6 +32,9 @@ impl ScalarType {
             ScalarType::BOOL,
             ScalarType::CURSOR,
             ScalarType::ADDRESS,
+            ScalarType::CONTRACT_ADDRESS,
+            ScalarType::STARKNET_CONTRACT_ADDRESS,
+            ScalarType::TRADE_STATUS,
             ScalarType::DATE_TIME,
             ScalarType::FELT252,
         ])

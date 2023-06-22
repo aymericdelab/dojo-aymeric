@@ -3,7 +3,7 @@ import './App.css';
 import { useDojo } from './DojoContext';
 import { useComponentValue, getEntityIdFromQuery } from "@dojoengine/react";
 import { Query } from '@dojoengine/core';
-import { setComponent } from '@latticexyz/recs';
+import { EntityIndex, setComponent } from '@latticexyz/recs';
 
 function App() {
   const {
@@ -13,15 +13,23 @@ function App() {
   } = useDojo();
 
   // let resource_id = 1;
-  const resourceQuery = { address_domain: "0", partition: "0", keys: [BigInt(0), BigInt(1)] };
-  const entityId =  getEntityIdFromQuery(resourceQuery);
-  const entityIndex = world.registerEntity({id: entityId})
+  const resourceQuery1 = { address_domain: "0", partition: "0", keys: [BigInt(0), BigInt(1)] };
+  const resourceQuery2 = { address_domain: "0", partition: "0", keys: [BigInt(0), BigInt(2)] };
+  const entityId1 =  getEntityIdFromQuery(resourceQuery1);
+  const entityId2 =  getEntityIdFromQuery(resourceQuery2);
+  // TODO: do we have to do that? 
+  // but we could also just use entityID from the pedersen hash of the query, same as in dojo
+  const entityIndex1 = world.registerEntity({id: entityId1})
+  const entityIndex2 = world.registerEntity({id: entityId2})
 
   // TODO: get entity from query
-  const resource = useComponentValue(Resource, entityIndex);
-  console.log('aymeric resource');
-  console.log(resource);
-  // Resource.entities()
+  // const resource = useComponentValue(Resource, entityIndex);
+  const resource1 = useComponentValue(Resource,  entityIndex1);
+  const resource2 = useComponentValue(Resource,  entityIndex2);
+  console.log('resource1');
+  console.log(resource1);
+  console.log('resource2');
+  console.log(resource2);
 
   const [chosenEntityId, setChosenEntityId] = useState<bigint | null>(null);
   const [chosenResourceType, setChosenResourceType] = useState<bigint | null>(null);
@@ -149,7 +157,9 @@ function App() {
     } else {
       console.log("Please select an entity and a resource type");
     }
-    setComponent(Resource, entityIndex, {resource_type: 1000, balance: 1000})
+    // you can set it multiple times it will only update the last one
+    setComponent(Resource, entityIndex1, {resource_type: 1000, balance: 1000})
+    setComponent(Resource, entityIndex2, {resource_type: 1110, balance: 2999})
   };
 
   const handleEntityIdChange = (event: React.ChangeEvent<HTMLInputElement>) => {
