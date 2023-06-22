@@ -1,104 +1,23 @@
-import { useEffect, useState } from 'react';
+import {useState } from 'react';
 import './App.css';
 import { useDojo } from './DojoContext';
-import { useComponentValue, getEntityIdFromQuery } from "@dojoengine/react";
-import { Query } from '@dojoengine/core';
-import { EntityIndex, setComponent } from '@latticexyz/recs';
+import { useComponentValue } from "@dojoengine/react";
+import { Utils } from '@dojoengine/core';
 
 function App() {
   const {
     systemCalls: { mint_resources, build_labor, harvest_labor },
     components: { Resource, Labor, Vault },
-    network: { world, signer, entity }
   } = useDojo();
 
-  // let resource_id = 1;
-  const resourceQuery1 = { address_domain: "0", partition: "0", keys: [BigInt(0), BigInt(1)] };
-  const resourceQuery2 = { address_domain: "0", partition: "0", keys: [BigInt(0), BigInt(2)] };
-  const entityId1 =  getEntityIdFromQuery(resourceQuery1);
-  const entityId2 =  getEntityIdFromQuery(resourceQuery2);
-  // TODO: do we have to do that? 
-  // but we could also just use entityID from the pedersen hash of the query, same as in dojo
-  const entityIndex1 = world.registerEntity({id: entityId1})
-  const entityIndex2 = world.registerEntity({id: entityId2})
-
-  // TODO: get entity from query
-  // const resource = useComponentValue(Resource, entityIndex);
-  const resource1 = useComponentValue(Resource,  entityIndex1);
-  const resource2 = useComponentValue(Resource,  entityIndex2);
-  console.log('resource1');
-  console.log(resource1);
-  console.log('resource2');
-  console.log(resource2);
-
-  const [chosenEntityId, setChosenEntityId] = useState<bigint | null>(null);
-  const [chosenResourceType, setChosenResourceType] = useState<bigint | null>(null);
-  const [resourceAmount, setResourceAmount] = useState<bigint | null>(null);
+  const [chosenEntityId, setChosenEntityId] = useState<bigint>(BigInt(0));
+  const [chosenResourceType, setChosenResourceType] = useState<bigint>(BigInt(1));
   const [inputResourceAmount, setInputResourceAmount] = useState<bigint | null>(null);
-  const [laborAmount, setLaborAmount] = useState<bigint | null>(null);
   const [inputLaborUnits, setInputLaborUnits] = useState<bigint | null>(null);
-  const [vaultBalance, setVaultBalance] = useState<bigint | null>(null);
-  const [lastHarvestTime, setLastHarvestTime] = useState<bigint | null>(null);
 
-  // const testResourceHook = useComponentValue() 
-
-  // address_domain and partition always 0
-  // const query: Query = { address_domain: "0", partition: "0", keys: [BigInt(signer.address)] };
-
-  // async function getEntity() {
-  //   try {
-  //     const va = await entity(Position.metadata.name, query);
-  //     return va;
-  //   } catch (e) {
-  //     console.log(e);
-  //   } finally {
-  //     console.log('done');
-  //   }
-  // }
-
-  // useEffect(() => {
-  //   getEntity().then(va => console.log(va));
-  // }, []);
-
-  useEffect(() => {
-    // Update information related to the currently selected resource type
-    if (chosenEntityId !== null && chosenResourceType !== null) {
-      // Perform queries for Labor and Vault with the chosen entity_id and resource_type
-      const laborQuery: Query = { address_domain: "0", partition: "0", keys: [chosenEntityId, chosenResourceType] };
-      const vaultQuery: Query = { address_domain: "0", partition: "0", keys: [chosenEntityId, chosenResourceType] };
-      const resourceQuery: Query = { address_domain: "0", partition: "0", keys: [chosenEntityId, chosenResourceType] };
-
-      entity(Labor.metadata.name, laborQuery)
-        .then(laborData => {
-          const [_, balance, lastHarvest, multiplier] = laborData;
-          setLaborAmount(balance);
-          setLastHarvestTime(lastHarvest);
-        })
-        .catch(error => {
-          console.error("Error retrieving labor information:", error);
-        });
-
-      entity(Vault.metadata.name, vaultQuery)
-        .then(vaultData => {
-          const [_, balance] = vaultData;
-          setVaultBalance(balance);
-        })
-        .catch(error => {
-          console.error("Error retrieving vault information:", error);
-        });
-
-      entity(Resource.metadata.name, resourceQuery)
-        .then(resourceData => {
-          const [_, resource_type, amount] = resourceData;
-          console.log("Resource type:", resource_type);
-          console.log("Amount:", amount)
-          setResourceAmount(amount);
-        })
-        .catch(error => {
-          console.error("Error retrieving vault information:", error);
-        });
-    }
-  }, [chosenEntityId, chosenResourceType]);
+  const resource = useComponentValue(Resource, Utils.getEntityIdFromKeys([chosenEntityId, chosenResourceType])); 
+  const labor = useComponentValue(Labor, Utils.getEntityIdFromKeys([chosenEntityId, chosenResourceType]));
+  const vault = useComponentValue(Vault, Utils.getEntityIdFromKeys([chosenEntityId, chosenResourceType]));
 
   const handleBuildLabor = async () => {
     // Check if entity_id and resource_type are selected
@@ -157,9 +76,6 @@ function App() {
     } else {
       console.log("Please select an entity and a resource type");
     }
-    // you can set it multiple times it will only update the last one
-    setComponent(Resource, entityIndex1, {resource_type: 1000, balance: 1000})
-    setComponent(Resource, entityIndex2, {resource_type: 1110, balance: 2999})
   };
 
   const handleEntityIdChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -192,7 +108,7 @@ function App() {
           <option value="255">255</option>
         </select>
         <div>Resource Type: {chosenResourceType?.toString()}</div>
-        <div>Amount: {resourceAmount?.toString()}</div>
+        <div>Amount: {resource? resource['balance']: 0}</div>
       </div>
       <div className="card">
       <input
@@ -222,9 +138,9 @@ function App() {
         </button>
       </div>
       <div className="card">
-        <div>Amount of Labor: {laborAmount?.toString()}</div>
-        <div>Amount in Vault: {vaultBalance?.toString()}</div>
-        <div>Last Harvested Time: {lastHarvestTime?.toString()}</div>
+        <div>Amount of Labor: {labor? labor['balance'].toString(): ''}</div>
+        <div>Amount in Vault: {vault? vault['balance'].toString(): ''}</div>
+        <div>Last Harvested Time: {labor? labor['last_harvest'].toString(): ''}</div>
       </div>
     </>
   );
