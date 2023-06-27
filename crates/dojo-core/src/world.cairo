@@ -10,7 +10,8 @@ mod World {
         contract_address::ContractAddressIntoFelt252, ClassHash, Zeroable, ContractAddress
     };
 
-    use dojo_core::storage::{db::Database, query::{Query, QueryTrait}};
+    use dojo_core::database;
+    use dojo_core::database::{query::{Query, QueryTrait}};
     use dojo_core::execution_context::Context;
     use dojo_core::auth::components::AuthRole;
     use dojo_core::auth::systems::Route;
@@ -27,6 +28,12 @@ mod World {
 
     #[event]
     fn SystemRegistered(name: felt252, class_hash: ClassHash) {}
+
+    #[event]
+    fn StoreSetRecord(table_id: felt252, keys: Span<felt252>, offset: u8, value: Span<felt252>) {}
+
+    #[event]
+    fn StoreDelRecord(table_id: felt252, keys: Span<felt252>) {}
 
     struct Storage {
         executor_dispatcher: IExecutorDispatcher,
@@ -278,7 +285,9 @@ mod World {
         // Set the entity
         let table = query.table(component);
         let component_class_hash = component_registry::read(component);
-        Database::set(component_class_hash, table, query, offset, value)
+        database::set(component_class_hash, table, query, offset, value);
+
+        StoreSetRecord(table, query.keys(), offset, value);
     }
 
     /// Delete a component from an entity
@@ -303,7 +312,9 @@ mod World {
         // Delete the entity
         let table = query.table(component);
         let component_class_hash = component_registry::read(component);
-        let res = Database::del(component_class_hash, component.into(), query);
+        database::del(component_class_hash, component.into(), query);
+
+        // StoreDelRecord(table, query.keys());
     }
 
     /// Get the component value for an entity
@@ -321,7 +332,7 @@ mod World {
     fn entity(component: felt252, query: Query, offset: u8, length: usize) -> Span<felt252> {
         let class_hash = component_registry::read(component);
         let table = query.table(component);
-        match Database::get(class_hash, table, query, offset, length) {
+        match database::get(class_hash, table, query, offset, length) {
             Option::Some(res) => res,
             Option::None(_) => {
                 ArrayTrait::new().span()
@@ -343,7 +354,7 @@ mod World {
     #[view]
     fn entities(component: felt252, partition: felt252) -> (Span<felt252>, Span<Span<felt252>>) {
         let class_hash = component_registry::read(component);
-        Database::all(class_hash, component.into(), partition)
+        database::all(class_hash, component.into(), partition)
     }
 
     /// Set the executor contract address
