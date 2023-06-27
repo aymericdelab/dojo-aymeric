@@ -1,6 +1,7 @@
 use std::collections::HashSet;
 use std::fmt;
 
+// TODO: better type handling for custom types
 #[derive(Debug, Clone, Copy, Hash, Eq, PartialEq)]
 pub enum ScalarType {
     U8,
@@ -12,6 +13,8 @@ pub enum ScalarType {
     USize,
     Bool,
     Cursor,
+    ContractAddress,
+    TradeStatus,
     Address,
     DateTime,
     Felt252,
@@ -30,6 +33,8 @@ impl fmt::Display for ScalarType {
             ScalarType::Bool => write!(f, "bool"),
             ScalarType::Cursor => write!(f, "Cursor"),
             ScalarType::Address => write!(f, "Address"),
+            ScalarType::ContractAddress => write!(f, "ContractAddress"),
+            ScalarType::TradeStatus => write!(f, "TradeStatus"),
             ScalarType::DateTime => write!(f, "DateTime"),
             ScalarType::Felt252 => write!(f, "felt252"),
         }
@@ -49,6 +54,8 @@ impl ScalarType {
             ScalarType::Bool,
             ScalarType::Cursor,
             ScalarType::Address,
+            ScalarType::ContractAddress,
+            ScalarType::TradeStatus,
             ScalarType::DateTime,
             ScalarType::Felt252,
         ]
@@ -77,6 +84,8 @@ impl ScalarType {
             ScalarType::U256,
             ScalarType::Cursor,
             ScalarType::Address,
+            ScalarType::ContractAddress,
+            ScalarType::TradeStatus,
             ScalarType::DateTime,
             ScalarType::Felt252,
         ]
@@ -100,6 +109,9 @@ impl ScalarType {
             "bool" => Ok(ScalarType::Bool),
             "Cursor" => Ok(ScalarType::Cursor),
             "Address" => Ok(ScalarType::Address),
+            "TradeStatus" => Ok(ScalarType::U8),
+            "ContractAddress" => Ok(ScalarType::Felt252),
+            "ID" => Ok(ScalarType::U128),
             "DateTime" => Ok(ScalarType::DateTime),
             "felt252" => Ok(ScalarType::Felt252),
             _ => Err(anyhow::anyhow!("Unknown type {}", s.as_ref().to_string())),
@@ -107,6 +119,10 @@ impl ScalarType {
     }
 
     pub fn as_sql_type(&self) -> &'static str {
-        if self.is_numeric_type() { "INTEGER" } else { "TEXT" }
+        if self.is_numeric_type() {
+            "INTEGER"
+        } else {
+            "TEXT"
+        }
     }
 }

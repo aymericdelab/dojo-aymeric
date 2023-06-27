@@ -18,6 +18,7 @@ pub struct Entity {
     pub id: String,
     pub partition: String,
     pub keys: Option<String>,
+    pub component_names: String,
     pub transaction_hash: String,
     pub created_at: DateTime<Utc>,
 }
@@ -33,6 +34,7 @@ impl EntityObject {
                 (Name::new("id"), TypeRef::ID.to_string()),
                 (Name::new("partition"), ScalarType::Felt252.to_string()),
                 (Name::new("keys"), TypeRef::STRING.to_string()),
+                (Name::new("componentNames"), TypeRef::STRING.to_string()),
                 (Name::new("transactionHash"), ScalarType::Felt252.to_string()),
                 (Name::new("createdAt"), ScalarType::DateTime.to_string()),
             ]),
@@ -44,6 +46,7 @@ impl EntityObject {
             (Name::new("id"), Value::from(entity.id)),
             (Name::new("partition"), Value::from(entity.partition)),
             (Name::new("keys"), Value::from(entity.keys.unwrap_or_default())),
+            (Name::new("componentNames"), Value::from(entity.component_names)),
             (Name::new("transactionHash"), Value::from(entity.transaction_hash)),
             (
                 Name::new("createdAt"),
