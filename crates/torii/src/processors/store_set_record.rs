@@ -32,12 +32,24 @@ impl<S: State + Sync, T: JsonRpcTransport> EventProcessor<S, T> for StoreSetReco
         let name = parse_cairo_short_string(&event.data[COMPONENT_INDEX])?;
         info!("store set record: {}", name);
 
+        // print the event data
+        // info!("event data: {:?}", event.data);
+
         let keys = values_at(&event.data, NUM_KEYS_INDEX)?;
-        let values_index = keys.len() + NUM_KEYS_INDEX + 2;
+        // print keys.len
+        // info!("keys.len: {}", keys.len());
+        let values_index = keys.len() + NUM_KEYS_INDEX + 1;
         let values = values_at(&event.data, values_index)?;
         // TODO: are we removing partitions?
         let partition = FieldElement::ZERO;
 
+        // print all these values
+        //for (i, key) in keys.iter().enumerate() {
+        //info!("key {}: {}", i, key);
+        //}
+        //info!("values: {:?}", values);
+        //info!("partition: {}", partition);
+        //info!("name: {}", name);
         storage.set_entity(name, partition, keys, values).await?;
         Ok(())
     }

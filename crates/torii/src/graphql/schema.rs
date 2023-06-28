@@ -72,6 +72,8 @@ async fn dynamic_objects(pool: &SqlitePool) -> Result<(Vec<Box<dyn ObjectTrait>>
     for component_metadata in components {
         let field_type_mapping = type_mapping_from(&mut conn, &component_metadata.id).await?;
         let (name, type_name) = format_name(&component_metadata.name);
+        // let name = component_metadata.name.clone();
+        // let type_name = component_metadata.name.clone();
 
         let state_object = Box::new(ComponentStateObject::new(
             name.clone(),
