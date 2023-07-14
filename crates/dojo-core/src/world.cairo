@@ -121,6 +121,7 @@ mod world {
         // Tracks the calling systems name for auth purposes.
         call_stack_len: felt252,
         call_stack: LegacyMap::<felt252, felt252>,
+        test: felt252,
     }
 
     #[constructor]
